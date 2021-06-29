@@ -10,6 +10,7 @@ class SwimRecordTestCase(TestCase):
 
     def test_01_validate_first_name_presence(self):
         """validates presence of first_name"""
+        print(self.record)
         try:
             self.record.full_clean()
         except ValidationError as e:
@@ -55,6 +56,7 @@ class SwimRecordTestCase(TestCase):
     def test_07_no_future_records(self):
         """does not allow records to be set in the future"""
         bad_date = timezone.now() + timedelta(days=1)
+        print(bad_date)
         record = SwimRecord(record_date=bad_date)
         try:
             record.full_clean()
@@ -63,9 +65,7 @@ class SwimRecordTestCase(TestCase):
 
     def test_08_no_break_record_before_set_record(self):
         """does not allow records to be broken before the record_date"""
-        record = SwimRecord(first_name='j',last_name='j',team_name='k',relay=True,stroke='butterfly',distance=100,record_date=timezone.now(),record_broken_date=(timezone.now() - timedelta(days=1)))
-        record.save()
-        try:
+        record = SwimRecord(first_name='j',last_name='j',team_name='k',relay=True,stroke='butterfly',distance=100,record_date=timezone.now() - timedelta(hours=1),record_broken_date=(timezone.now() - timedelta(days=1)))
+        with self.assertRaises(Exception) as context:
             record.full_clean()
-        except ValidationError as e:
-            self.assertTrue("Can't break record before record was set." in e.message_dict['record_broken_date'])
+        self.assertEqual(["Can't break record before record was set."], (context.exception.message_dict['record_broken_date']))
