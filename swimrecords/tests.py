@@ -61,6 +61,17 @@ class SwimRecordTestCase(TestCase):
         except ValidationError as e:
             self.assertTrue("Can't set record in the future." in e.message_dict['record_date'])
 
+
+   # Rewrote this test to properly fail when no error checking in play.
+    # This solution needs refactoring a bit, but it works.
+    # def test_08_no_break_record_before_set_record(self):
+    #     """does not allow records to be broken before the record_date"""
+    #     record = SwimRecord(first_name='j',last_name='j',team_name='k',relay=True,stroke='butterfly',distance=100,record_date=timezone.now() - timedelta(hours=1),record_broken_date=(timezone.now() - timedelta(days=1)))
+    #     with self.assertRaises(Exception) as context:
+    #         record.full_clean()
+    #     self.assertEqual(["Can't break record before record was set."], (context.exception.message_dict['record_broken_date']))
+
+
     def test_08_no_break_record_before_set_record(self):
         """does not allow records to be broken before the record_date"""
         record = SwimRecord(first_name='j',last_name='j',team_name='k',relay=True,stroke='butterfly',distance=100,record_date=timezone.now(),record_broken_date=(timezone.now() - timedelta(days=1)))
