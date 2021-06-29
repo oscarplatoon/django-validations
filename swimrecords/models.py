@@ -4,12 +4,13 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.core.validators import MaxValueValidator
+from datetime import datetime
 
 # Resolves test 5
-def validate_stroke(value):
+def validate_stroke(test_stroke):
     valid_strokes = ['front crawl', 'butterfly', 'breast', 'back', 'freestyle']
-    if value not in valid_strokes:
-        raise ValidationError(f"{value} is not a valid stroke")
+    if test_stroke not in valid_strokes:
+        raise ValidationError(f"{test_stroke} is not a valid stroke")
 
 # Resolves test 6
 def validate_distance(distance):
@@ -18,9 +19,8 @@ def validate_distance(distance):
 
 # Resolves test 7
 def validate_future_date(test_date):
-    if test_date >= timezone.now():
+    if test_date > timezone.now():
         raise ValidationError("Can't set record in the future.")
-
 
 
 class SwimRecord(models.Model):
@@ -36,11 +36,9 @@ class SwimRecord(models.Model):
 
 
     # Use a self comparison that fires when the model.save() is called
-    def validate_record_break(self):
-        if self.record_date < self.record_broken_date:
-            raise ValidationError("Can't break record before record was set.")
-
-    # Perform the self validate, then save as normal.
-    def save(self, *args, **kwargs):
-        self.validate_record_break()
-        return super().save(*args, **kwargs)
+    # Record broken validator
+    def clean(self):
+        cleaned_data = super().clean()
+        if self.record_date and self.record_broken_date:
+            if self.record_date >= self.record_broken_date:
+                raise ValidationError({'record_broken_date':"Can't break record before record was set."})
