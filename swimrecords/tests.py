@@ -10,6 +10,8 @@ class SwimRecordTestCase(TestCase):
 
     def test_01_validate_first_name_presence(self):
         """validates presence of first_name"""
+
+        valid_first_name = SwimRecord(first_name='Musa', last_name='Shogunle', team_name='Coder', relay= True, stroke='Butterfly', distance=100)
         try:
             self.record.full_clean()
         except ValidationError as e:
@@ -17,6 +19,8 @@ class SwimRecordTestCase(TestCase):
 
     def test_02_validate_last_name_presence(self):
         """validates presence of last_name"""
+
+        valid_last_name = SwimRecord(first_name='Musa', last_name='Shogunle', team_name='Coder', relay= True, stroke='Butterfly', distance=100)
         try:
             self.record.full_clean()
         except ValidationError as e:
@@ -24,6 +28,8 @@ class SwimRecordTestCase(TestCase):
 
     def test_03_validate_team_name_presence(self):
         """validates presence of team_name"""
+
+        valid_team_name = SwimRecord(first_name='Musa', last_name='Shogunle', team_name='Coder', relay= True, stroke='Butterfly', distance=100)
         try:
             self.record.full_clean()
         except ValidationError as e:
@@ -31,6 +37,8 @@ class SwimRecordTestCase(TestCase):
 
     def test_04_validate_relay_presence(self):
         """validates presence of relay"""
+
+        valid_relay = SwimRecord(first_name='Musa', last_name='Shogunle', team_name='Coder', relay= True, stroke='Butterfly', distance=100)
         try:
             self.record.full_clean()
         except ValidationError as e:
@@ -42,7 +50,7 @@ class SwimRecordTestCase(TestCase):
         try:
             stroke_record.full_clean()
         except ValidationError as e:
-            self.assertTrue("doggie paddle is not a valid stroke" in e.message_dict['stroke'])
+            self.assertTrue(f"doggie paddle is not a valid stroke" in e.message_dict['stroke'])
 
     def test_06_valid_distance(self):
         """must be greater than or equal to 50"""
