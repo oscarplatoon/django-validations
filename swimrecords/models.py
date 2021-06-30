@@ -20,7 +20,7 @@ def validate_team_name(team_name):
 
 def validate_relay(relay):
     
-    if relay == True or relay == False:
+    if relay != True and relay != False:
         raise ValidationError(text("'None' value must be either True or False."))
 
 def validate_stroke(stroke):
